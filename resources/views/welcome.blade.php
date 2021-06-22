@@ -69,7 +69,7 @@
                 <div class="top-right links">
                     @auth
                         {{-- 這個寫法是對應Route裏面的name --}}
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/admin/home') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
 

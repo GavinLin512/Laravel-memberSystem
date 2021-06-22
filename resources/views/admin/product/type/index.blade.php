@@ -35,7 +35,7 @@
                                 @foreach ($lists as $item)
                                 <tr>
                                     <td>{{ $item->type_name }}</td>
-                                    <td>{{ $item->product->count() }}</td>
+                                    <td>{{ $item->products->count() }}</td>
                                     <td>
                                         <a class="btn btn-primary btn-sm" href="{{ asset('/admin/product/type/edit') }}/{{ $item->id }}">編輯</a>
                                         <form style="display: inline-block" action="{{ asset('/admin/product/type/delete') }}/{{ $item->id }}" method="POST">

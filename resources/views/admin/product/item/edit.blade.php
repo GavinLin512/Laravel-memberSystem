@@ -27,48 +27,63 @@
                             @csrf
 
                             <div class="form-group">
-                                <label for="product_type_id">{{ __('產品種類') }}</label>
-                                <select class="form-control" id="product_type_id" name="product_type_id">
+                                <label for="type_name">{{ __('產品種類') }}</label>
+                                <select class="form-control" id="type_name" name="product_type_id">
                                     @foreach ($type as $item)
-                                        <option @if ($item->id == $record->product_type_id) selected @endif value="{{ $item->type_name }}">{{ $item->type_name }}</option>
+                                        <option @if ($item->id == $record->product_type_id) selected @endif value="{{ $item->id }}">
+                                            {{ $item->type_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="product_name">{{ __('產品品項名稱') }}</label>
-                                <input id="product_name" type="text" class="form-control " name="product_name" value="{{ $record->product_name }}" required
-                                    autocomplete="product_name" autofocus>
+                                <input id="product_name" type="text" class="form-control " name="product_name"
+                                    value="{{ $record->product_name }}" required autocomplete="product_name" autofocus>
                             </div>
 
                             <div class="form-group">
                                 <label for="price">{{ __('產品品項價錢') }}</label>
-                                <input id="price" type="number" class="form-control " name="price" value="{{ $record->price }}" required
-                                    autocomplete="price" autofocus>
+                                <input id="price" type="number" class="form-control " name="price"
+                                    value="{{ $record->price }}" required autocomplete="price" autofocus>
+                            </div>
+                            <hr>
+                            <div class="form-group row">
+                                <label class="col-12" for="">{{ __('產品主要圖片') }}</label>
+                                <div class="col-md-3">
+                                    <img class="w-100" src="{{ $record->photo }}" alt="">
+                                </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="photo">{{ __('修改產品主要圖片') }}</label>
+                                <input id="photo" type="file" multiple class="form-control " name="photo"
+                                    autocomplete="photo" autofocus>
+                            </div>
+                            <hr>
                             {{-- 要讓使用者可以在編輯資料時刪除關聯的圖片 --}}
                             <div class="form-group row">
-                                <label class="col-12" for="">{{ __('既有產品品項圖片') }}</label>
-                                @foreach ($photos as $item)
+                                <label class="col-12" for="">{{ __('產品其他圖片') }}</label>
+                                @foreach ($record->photos as $photo)
                                     <div class="col-md-3">
                                         {{-- 點選到圖片刪除按鈕時，將該圖片的 ID 記錄下來，傳到後端 --}}
                                         {{-- 後端根據此 ID 找到該筆資料，進行刪除 --}}
-                                        <div data-id="{{ $item->id }}" class="del-img-btn">X</div>
-                                        <img class="w-100" src="{{ $item->photo }}" alt="">
+                                        <div data-id="{{ $photo->id }}" class="del-img-btn">X</div>
+                                        <img class="w-100" src="{{ $photo->photo }}" alt="">
                                     </div>
                                 @endforeach
                             </div>
 
                             <div class="form-group">
-                                <label for="photos">{{ __('更改產品品項圖片') }}</label>
-                                <input id="photos" type="file" multiple class="form-control " name="photos[]" required
+                                <label for="photos">{{ __('新增產品其他圖片') }}</label>
+                                <input id="photos" type="file" multiple class="form-control " name="photos[]"
                                     autocomplete="photos" autofocus>
                             </div>
 
                             <div class="form-group">
                                 <label for="discript">{{ __('產品品項描述') }}</label>
-                                <textarea class="form-control" id="discript" rows="8" name="discript">{{ $record->discript }}</textarea>
+                                <textarea class="form-control" id="discript" rows="8"
+                                    name="discript">{{ $record->discript }}</textarea>
                             </div>
 
                             <div class="form-group mb-0">
@@ -85,36 +100,41 @@
 @endsection
 
 @section('js')
-<script>
-    $('.del-img-btn').click(function () {
-        var id = $(this).attr('data-id');
-        var parent_element = $(this).parent();
-        var formdata = new FormData();
-        // append('key', 'value')
-        formdata.append('id', id);
-        formdata.append('_token', '{{ csrf_token() }}')
+    <script>
+        $('.del-img-btn').click(function() {
+            var id = $(this).attr('data-id');
+            var parent_element = $(this).parent();
+            // console.log(parent_element);
+            var formdate = new FormData();
+            // append('key', 'value')
+            formdate.append('id', id);
+            formdate.append('_token', '{{ csrf_token() }}')
 
-        var yes = confirm('你確定要刪除這張圖片嗎？');
-        // 送 POST 表單的時候會用 Form 表單送資料
-        if (yes) {
-            // fetch 格式
-            // fetch('/admin/deleteImage',{
-            //     'method': 'post'
-            // }).then(function (response) {
+            var yes = confirm('你確定要刪除這張圖片嗎？');
+            // 送 POST 表單的時候會用 Form 表單送資料
+            if (yes) {
+                // fetch 格式
+                // fetch('/admin/deleteImage',{
+                //     'method': 'post'
+                // }).then(function (response) {
 
-            // }).then(function (result) {
+                // }).then(function (result) {
 
-            // })
-            fetch('/admin/product/item/deleteImage',{
-                'method' : 'post',
-                'body' : formdata
-            }).then(function (response) {
-                // console.log(response);
-            }).then(function (result) {
-                alert('刪除成功！');
-                parent_element.remove();
-            });
-        }
-    })
-</script>
+                // })
+                fetch('/admin/product/item/deleteImage', {
+                    'method': 'post',
+                    'body': formdate
+                }).then(function(response) {
+                    // console.log(response);
+                    return response.text();
+                }).then(function(result) {
+                    if (result == 'sucess') {
+                        // 前端畫面顯示
+                        alert('刪除成功！');
+                        parent_element.remove();
+                    }
+                });
+            }
+        })
+    </script>
 @endsection

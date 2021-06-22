@@ -17,8 +17,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::prefix('/contact_us')->group(function () {
+    Route::get('/', 'FrontController@index');
+    Route::post('/send', 'ContactusController@store');
+});
+
+
+
 // prefix：特定前綴才能進入，group：群組，middleware：控制角色權限
-Route::middleware('auth', 'can:admin')->prefix('/admin')->group(function () {
+Route::middleware('auth', 'admin')->prefix('/admin')->group(function () {
     // 要去 RouteServiceProvider 改 const HOME 路徑
     Route::get('/home', 'HomeController@index')->name('home');
 
@@ -51,18 +58,22 @@ Route::middleware('auth', 'can:admin')->prefix('/admin')->group(function () {
             Route::delete('/delete/{id}', 'ProductController@delete');
             Route::post('/deleteImage', 'ProductController@deleteImage');
         });
-
-
     });
 
+    Route::prefix('/contact_us')->group(function () {
+        Route::get('/', 'ContactusController@index');
+        Route::get('/edit/{id}', 'ContactusController@edit');
+        Route::delete('/delete/{id}', 'ContactusController@delete');
+    });
 
-
-    Route::get('/user', 'UserController@index');
-    Route::get('/user/create', 'UserController@create');
-    Route::post('/user/store', 'UserController@store');
-    Route::get('/user/edit/{id}', 'UserController@edit');
-    Route::post('/user/update/{id}', 'UserController@update');
-    Route::delete('/user/delete/{id}', 'UserController@delete');
+    Route::prefix('/user')->group(function () {
+        Route::get('/', 'UserController@index');
+        Route::get('/create', 'UserController@create');
+        Route::post('/store', 'UserController@store');
+        Route::get('/edit/{id}', 'UserController@edit');
+        Route::post('/update/{id}', 'UserController@update');
+        Route::delete('/delete/{id}', 'UserController@delete');
+    });
 });
 
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('page-title', '最新消息管理頁面')
+@section('page-title', '聯絡我們管理頁面')
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/news_index.css') }}">
@@ -11,44 +11,39 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ asset('admin/home') }}">首頁</a></li>
-                <li class="breadcrumb-item active" aria-current="page">最新消息</li>
+                <li class="breadcrumb-item active" aria-current="page">聯絡我們</li>
             </ol>
         </nav>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h2>{{ __('最新消息') }}</h2>
+                        <h2>{{ __('聯絡我們') }}</h2>
                     </div>
 
                     <div class="card-body">
-                        <a href="{{ asset('/admin/news/create') }}" class="btn btn-success">新增</a>
                         <table id="my-datatable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>分類</th>
-                                    <th>日期</th>
-                                    <th>標題</th>
-                                    <th>圖片</th>
-                                    <th>內容</th>
+                                    <th>姓名</th>
+                                    <th>信箱</th>
+                                    <th>主旨</th>
+                                    <th>訊息</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($lists as $item)
                                     <tr>
-                                        <td>{{ $item->type }}</td>
-                                        <td>{{ $item->publish_date }}</td>
-                                        <td>{{ $item->title }}</td>
-                                        <td>
-                                            <img style="width: 200px" src="{{ asset($item->img) }}" alt="">
-                                        </td>
-                                        <td>{{ $item->content }}</td>
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->email }}</td>
+                                        <td>{{ $item->subject }}</td>
+                                        <td>{{ $item->message_return }}</td>
                                         <td>
                                             <a class="btn btn-primary btn-sm"
-                                                href="{{ asset('/admin/news/edit') }}/{{ $item->id }}">編輯</a>
+                                                href="{{ asset('/admin/contact_us/edit') }}/{{ $item->id }}">查看</a>
                                             <form style="display: inline-block"
-                                                action="{{ asset('/admin/news/delete') }}/{{ $item->id }}"
+                                                action="{{ asset('/admin/contact_us/delete') }}/{{ $item->id }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('delete')
@@ -60,11 +55,10 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th>分類</th>
-                                    <th>日期</th>
-                                    <th>標題</th>
-                                    <th>圖片</th>
-                                    <th>內容</th>
+                                    <th>姓名</th>
+                                    <th>信箱</th>
+                                    <th>主旨</th>
+                                    <th>訊息</th>
                                     <th>操作</th>
                                 </tr>
                             </tfoot>
@@ -78,11 +72,12 @@
 @endsection
 
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $('#my-datatable').DataTable({
-                "ordering": false,
-            });
+<script>
+    $(document).ready(function() {
+        $('#my-datatable').DataTable({
+            "ordering": false,
         });
-    </script>
+    });
+</script>
 @endsection
+

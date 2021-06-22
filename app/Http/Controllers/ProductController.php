@@ -24,12 +24,7 @@ class ProductController extends Controller
     public function index()
     {
         $lists = Product::get();
-        // foreach ($lists as $key => $value) {
-        //      $record = ProductImg::where('photo')->get();
-        // }
-
-        // $photos = $record->photos;
-        // dd($record);
+        // dd($lists['id']);
 
         return view($this->index, compact('lists'));
     }
@@ -42,13 +37,17 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $requestData = $request->all();
+        if($request->hasFile('photo')){
+            $requestData['photo'] = FileController::imageUpload($request->file('photo'));
+        }
         // Product::create([
         //     'product_name' => $request['product_name'],
         //     'price' => $request['price'],
         //     'discript' => $request['discript'],
         //     'product_type_id' => $request['product_type_id'],
         // ]);
-        $new_record = Product::create($request->all());
+        $new_record = Product::create($requestData);
 
         if ($request->hasFile('photos')) {
             // dd($request->photos);
@@ -71,12 +70,12 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $record = Product::find($id);
+        $record = Product::with('photos')->find($id);
         $type = ProductType::get();
-        $photos = $record->photos;
+
         // dd($type);
 
-        return view($this->edit, compact('record', 'type', 'photos'));
+        return view($this->edit, compact('record', 'type'));
     }
 
     public function update(Request $request, $id)
@@ -86,6 +85,7 @@ class ProductController extends Controller
         $old_record->price = $request->price;
         $old_record->discript = $request->discript;
         $old_record->product_type_id = $request->product_type_id;
+        // dd($request->product_type_id);
         $old_record->save();
 
         return redirect('/admin/product/item')->with('message', '編輯產品品項成功！');
@@ -94,20 +94,33 @@ class ProductController extends Controller
     public function delete(Request $request, $id)
     {
         $old_record = Product::find($id);
+        // $old_record_img = ProductImg::where('product_id', $id)->get();
+        // dd($old_record_img);
         $old_record->delete();
+
+
+        // if (file_exists(public_path() . $old_record_img->photo)) {
+        //     // 如果該檔案存在，就刪除該檔案
+        //     File::delete(public_path() . $old_record_img->photo);
+        // }
+        // $old_record_img->delete();
 
         return redirect('/admin/product/item')->with('message', '刪除產品品項成功！');
     }
 
     public function deleteImage(Request $request)
     {
-        dd($request->id);
+        // dd($request->id);
         // 先透過 ID 找出要刪除的資料
         $old_record = ProductImg::find($request->id);
+        // dd(public_path() . $old_record->photo);
         // 判斷要刪除的檔案
         if (file_exists(public_path() . $old_record->photo)) {
             // 如果該檔案存在，就刪除該檔案
             File::delete(public_path() . $old_record->photo);
         }
+        $old_record->delete();
+
+        return 'sucess';
     }
 }

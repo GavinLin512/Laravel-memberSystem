@@ -48,8 +48,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="photos" >{{ __('產品品項圖片') }}</label>
-                                    <input id="photos" type="file" multiple class="form-control " name="photos[]" required
+                                <label for="photo" >{{ __('產品主要圖片') }}</label>
+                                    <input id="photo" type="file" class="form-control " name="photo" required
+                                        autocomplete="photo" autofocus>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="photos" >{{ __('產品其他圖片') }}</label>
+                                    <input id="photos" type="file" multiple class="form-control " name="photos[]" 
                                         autocomplete="photos" autofocus>
                             </div>
 

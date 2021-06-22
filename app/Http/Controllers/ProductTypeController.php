@@ -19,7 +19,9 @@ class ProductTypeController extends Controller
 
     public function index()
     {
-        $lists = ProductType::get();
+        // 抓 model 裏面關聯資料庫的 function
+        $lists = ProductType::with('products')->get();
+        // dd($lists);
         // 取單筆資料用索引值
         // dd(ProductType::find(1)->product[0]);
         // 取出來是陣列，因為用 hasMany
@@ -60,12 +62,13 @@ class ProductTypeController extends Controller
 
     public function delete(Request $request, $id)
     {
-        $old_record = ProductType::find($id);
+        $old_record = ProductType::with('products')->find($id);
+        $count = $old_record->product->count();
         // 不應該讓使用者在種類裡面還有品項的情況下刪除種類
-        if ($old_record->product->count() != 0) {
+        if ($count != 0) {
             // dd($old_record->product);
-            return redirect('/admin/product/type')->with('message', '無法刪除該產品種類，該產品種類內還有' . $old_record->product->count() . '筆產品品項資料，請先刪除產品種類的產品品項。');
-        } elseif($old_record->product->count() == 0) {
+            return redirect('/admin/product/type')->with('message', '無法刪除該產品種類，該產品種類內還有' . $count . '筆產品品項資料，請先刪除產品種類的產品品項。');
+        } elseif( $count == 0) {
 
             $old_record->delete();
             return redirect('/admin/product/type')->with('message', '刪除產品種類成功！');

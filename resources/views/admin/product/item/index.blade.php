@@ -29,7 +29,6 @@
                                     <th>產品種類</th>
                                     <th>產品名稱</th>
                                     <th>產品價格</th>
-                                    <th>產品圖片</th>
                                     <th>產品描述</th>
                                     <th>操作</th>
                                 </tr>
@@ -40,9 +39,6 @@
                                     <td>{{ $item->type->type_name }}</td>
                                     <td>{{ $item->product_name }}</td>
                                     <td>{{ $item->price }}</td>
-                                    <td>
-                                        {{-- <img src="{{ asset($record) }}" alt=""> --}}1
-                                    </td>
                                     <td>{{ $item->discript }}</td>
                                     <td>
                                         <a class="btn btn-primary btn-sm" href="{{ asset('/admin/product/item/edit') }}/{{ $item->id }}">編輯</a>
@@ -60,7 +56,6 @@
                                     <th>產品種類</th>
                                     <th>產品名稱</th>
                                     <th>產品價格</th>
-                                    <th>產品圖片</th>
                                     <th>產品描述</th>
                                     <th>操作</th>
                                 </tr>
@@ -78,7 +73,7 @@
     <script>
         $(document).ready(function() {
             $('#my-datatable').DataTable({
-                "ordering": false,
+                "ordering": true,
             });
         });
 
