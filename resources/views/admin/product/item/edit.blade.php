@@ -23,7 +23,8 @@
                         <h2>{{ __('編輯產品品項') }}</h2>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ asset('/admin/product/item/update') }}/{{ $record->id }}">
+                        <form method="POST" action="{{ asset('/admin/product/item/update') }}/{{ $record->id }}"
+                            enctype="multipart/form-data">
                             @csrf
 
                             <div class="form-group">
@@ -57,19 +58,19 @@
 
                             <div class="form-group">
                                 <label for="photo">{{ __('修改產品主要圖片') }}</label>
-                                <input id="photo" type="file" multiple class="form-control " name="photo"
-                                    autocomplete="photo" autofocus>
+                                <input id="photo" type="file" class="form-control " name="photo" autocomplete="photo"
+                                    autofocus>
                             </div>
                             <hr>
                             {{-- 要讓使用者可以在編輯資料時刪除關聯的圖片 --}}
-                            <div class="form-group row">
+                            <div class="form-group d-flex flex-wrap">
                                 <label class="col-12" for="">{{ __('產品其他圖片') }}</label>
                                 @foreach ($record->photos as $photo)
-                                    <div class="col-md-3">
+                                    <div class="product-img" style="background-image: url({{ asset($photo->photo) }})">
                                         {{-- 點選到圖片刪除按鈕時，將該圖片的 ID 記錄下來，傳到後端 --}}
                                         {{-- 後端根據此 ID 找到該筆資料，進行刪除 --}}
                                         <div data-id="{{ $photo->id }}" class="del-img-btn">X</div>
-                                        <img class="w-100" src="{{ $photo->photo }}" alt="">
+                                        {{-- <img class="w-100" src="{{ $photo->photo }}" alt=""> --}}
                                     </div>
                                 @endforeach
                             </div>
@@ -136,5 +137,31 @@
                 });
             }
         })
+
+        // js
+        // var delBtns = document.querySelectorAll('.del-img-btn');
+        // delBtns.forEach(function(delBtn) {
+        //     delBtn.addEventListener('click', function() {
+        //         var id = this.getAttribute('data-id');
+        //         var parentElement = this.parentElement;
+        //         var formData = new FormData();
+        //         formData.append('_token', '{{ csrf_token() }}');
+        //         formData.append('id', id);
+
+        //         fetch('/admin/product/item/deleteImage', {
+        //                 'method': 'POST',
+        //                 'body': formData
+        //             })
+        //             .then(function(response) {
+        //                 return response.text();
+        //             })
+        //             .then(function(result) {
+        //                 if (result == 'success') {
+        //                     alert('刪除成功');
+        //                     parentElement.remove();
+        //                 }
+        //             })
+        //     });
+        // });
     </script>
 @endsection

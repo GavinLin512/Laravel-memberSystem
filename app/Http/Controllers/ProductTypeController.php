@@ -14,7 +14,6 @@ class ProductTypeController extends Controller
         $this->create = 'admin.product.type.create';
         $this->edit = 'admin.product.type.edit';
         $this->show = 'admin.product.type.show';
-
     }
 
     public function index()
@@ -63,17 +62,15 @@ class ProductTypeController extends Controller
     public function delete(Request $request, $id)
     {
         $old_record = ProductType::with('products')->find($id);
-        $count = $old_record->product->count();
+        $count = $old_record->products->count();
         // 不應該讓使用者在種類裡面還有品項的情況下刪除種類
         if ($count != 0) {
             // dd($old_record->product);
             return redirect('/admin/product/type')->with('message', '無法刪除該產品種類，該產品種類內還有' . $count . '筆產品品項資料，請先刪除產品種類的產品品項。');
-        } elseif( $count == 0) {
+        } elseif ($count == 0) {
 
             $old_record->delete();
             return redirect('/admin/product/type')->with('message', '刪除產品種類成功！');
         }
-
-
     }
 }

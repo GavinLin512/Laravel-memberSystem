@@ -22,6 +22,10 @@ Route::prefix('/contact_us')->group(function () {
     Route::post('/send', 'ContactusController@store');
 });
 
+Route::prefix('/product')->group(function(){
+    Route::get('/', 'FrontController@productIndex');
+});
+
 
 
 // prefix：特定前綴才能進入，group：群組，middleware：控制角色權限

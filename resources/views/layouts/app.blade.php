@@ -48,14 +48,15 @@
                                 <a class="nav-link" href="{{ asset('admin/news') }}">{{ __('最新消息') }}</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ __('產品管理') }}</a>
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                                    aria-haspopup="true" aria-expanded="false">{{ __('產品管理') }}</a>
                                 <div class="dropdown-menu">
-                                  <a class="dropdown-item" href="{{ asset('/admin/product/type') }}">產品種類</a>
-                                  <a class="dropdown-item" href="{{ asset('/admin/product/item') }}">產品品項</a>
-                                  {{-- <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ asset('/admin/product/type') }}">產品種類</a>
+                                    <a class="dropdown-item" href="{{ asset('/admin/product/item') }}">產品品項</a>
+                                    {{-- <div class="dropdown-divider"></div>
                                   <a class="dropdown-item" href="#">Separated link</a> --}}
                                 </div>
-                              </li>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ asset('admin/user') }}">{{ __('會員管理') }}</a>
                             </li>
@@ -86,7 +87,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                             document.getElementById('logout-form').submit();">
+                                                                     document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -103,11 +104,11 @@
 
         <main class="py-4">
             @if (Session::has('message'))
-            <div class="container">
-                <div class="alert alert-success" role="alert">
-                    {{ Session::get('message') }}
+                <div class="container">
+                    <div class="alert alert-success" role="alert">
+                        {{ Session::get('message') }}
+                    </div>
                 </div>
-            </div>
             @endif
 
             @yield('content')

@@ -38,7 +38,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $requestData = $request->all();
-        if($request->hasFile('photo')){
+        if ($request->hasFile('photo')) {
             $requestData['photo'] = FileController::imageUpload($request->file('photo'));
         }
         // Product::create([
@@ -72,6 +72,7 @@ class ProductController extends Controller
     {
         $record = Product::with('photos')->find($id);
         $type = ProductType::get();
+        // dd($record);
 
         // dd($type);
 
@@ -80,30 +81,64 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $old_record = Product::find($id);
-        $old_record->product_name = $request->product_name;
-        $old_record->price = $request->price;
-        $old_record->discript = $request->discript;
-        $old_record->product_type_id = $request->product_type_id;
-        // dd($request->product_type_id);
-        $old_record->save();
+        $old_record = Product::with('photos')->find($id);
+        $requestData = $request->all();
+        // dd($request);
+        if ($request->hasFile('photo')) {
+            File::delete(public_path().$old_record->photo);
+            $path = FileController::imageUpload($request->file('photo'));
+            // dd($path);
+            $requestData['photo'] = $path;
+        }
+        $old_record->update($requestData);
+
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $file) {
+                $path = FileController::imageUpload($file);
+
+                ProductImg::create([
+                    'product_id' =>$old_record->id,
+                    'photo' =>$path
+                ]);
+            }
+        }
+
+        // $requestData = $request->all();
+        // dd($requestData);
+        // $new_record = Product::create($requestData);
+
+        // if ($request->hasFile('photos')) {
+        //     // dd($request->photos);
+        //     foreach ($request->file('photos') as $item) {
+
+        //         // 因為已經跑 foreach，所以 $item 後面就不用再指定
+        //         $path = FileController::imageUpload($item);
+        //         // dd($request->img, public_path());
+
+        //         ProductImg::create([
+        //             'photo' => $path,
+        //             'product_id' => $new_record->id,
+        //         ]);
+        //     }
+        // }
 
         return redirect('/admin/product/item')->with('message', '編輯產品品項成功！');
     }
 
     public function delete(Request $request, $id)
     {
-        $old_record = Product::find($id);
-        // $old_record_img = ProductImg::where('product_id', $id)->get();
-        // dd($old_record_img);
+        $old_record = Product::with('photos')->find($id);
+        // 刪除單張圖片
+        File::delete(public_path().$old_record->photo);
+        // 刪除其他圖片
+        foreach ($old_record->photos as $photo) {
+            File::delete(public_path().$photo->photo);
+            $photo->delete();
+        }
+
         $old_record->delete();
 
 
-        // if (file_exists(public_path() . $old_record_img->photo)) {
-        //     // 如果該檔案存在，就刪除該檔案
-        //     File::delete(public_path() . $old_record_img->photo);
-        // }
-        // $old_record_img->delete();
 
         return redirect('/admin/product/item')->with('message', '刪除產品品項成功！');
     }
